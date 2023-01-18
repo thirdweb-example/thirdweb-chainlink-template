@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.12;
 
 import "../../contracts/APIConsumer.sol";
 import "./mocks/LinkToken.sol";
@@ -12,7 +12,6 @@ contract APIConsumerTest is Test {
     LinkToken public linkToken;
     MockOracle public mockOracle;
 
-    bytes32 jobId;
     uint256 fee;
     bytes32 blank_bytes32;
 
@@ -24,7 +23,6 @@ contract APIConsumerTest is Test {
         mockOracle = new MockOracle(address(linkToken));
         apiConsumer = new APIConsumer(
             address(mockOracle),
-            jobId,
             fee,
             address(linkToken)
         );
@@ -32,13 +30,13 @@ contract APIConsumerTest is Test {
     }
 
     function testCanMakeRequest() public {
-        bytes32 requestId = apiConsumer.requestVolumeData();
+        bytes32 requestId = apiConsumer.requestData();
         assertTrue(requestId != blank_bytes32);
     }
 
     function testCanGetResponse() public {
-        bytes32 requestId = apiConsumer.requestVolumeData();
+        bytes32 requestId = apiConsumer.requestData();
         mockOracle.fulfillOracleRequest(requestId, bytes32(RESPONSE));
-        assertTrue(apiConsumer.volume() == RESPONSE);
+        assertTrue(apiConsumer.temperature() == RESPONSE);
     }
 }

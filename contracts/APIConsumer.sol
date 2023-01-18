@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.12;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title The APIConsumer contract
@@ -10,30 +11,30 @@ import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 contract APIConsumer is ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
-    uint256 public volume;
+    uint256 public temperature;
     address private immutable oracle;
     bytes32 private immutable jobId;
     uint256 private immutable fee;
+    string private requestUrl;
+    address private immutable owner;
 
-    event DataFullfilled(uint256 volume);
+    event DataFullfilled(uint256 temperature);
 
     /**
      * @notice Executes once when a contract is created to initialize state variables
      *
      * @param _oracle - address of the specific Chainlink node that a contract makes an API call from
-     * @param _jobId - specific job for :_oracle: to run; each job is unique and returns different types of data
      * @param _fee - node operator price per API call / data request
      * @param _link - LINK token address on the corresponding network
      *
      * Network: Goerli
      * Oracle: 0xCC79157eb46F5624204f47AB42b3906cAA40eaB7
-     * Job ID: ca98366cc7314957b8c012c72f05aeeb
+     * Job ID: 7d80a6386ef543a3abb52817f6707e3b
      * Fee: 0.1 LINK
      * Link: 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
      */
     constructor(
         address _oracle,
-        bytes32 _jobId,
         uint256 _fee,
         address _link
     ) {
@@ -43,44 +44,68 @@ contract APIConsumer is ChainlinkClient {
             setChainlinkToken(_link);
         }
         oracle = _oracle;
-        jobId = _jobId;
+        jobId = "ca98366cc7314957b8c012c72f05aeeb";
         fee = _fee;
+        owner = msg.sender;
     }
 
     /**
-     * @notice Creates a Chainlink request to retrieve API response, find the target
-     * data, then multiply by 1000000000000000000 (to remove decimal places from data).
+     * @notice Creates a url for the Chainlink request
+     *
+     * @param apiKey - your API key: sign up here https://openweathermap.org/api/one-call-3
+     * @param lat - latitude you'd like to retrieve current weather for
+     * @param long - longitude
+     *
+     */
+    function createRequest(
+        string calldata apiKey,
+        string calldata lat,
+        string calldata long
+    ) public {
+        requestUrl = string.concat(
+            "http://api.openweathermap.org/data/3.0/onecall/timemachine?",
+            "lat=",
+            lat,
+            "&lon=",
+            long,
+            "&dt=",
+            Strings.toString(block.timestamp),
+            "&exclude=minutely,hourly,daily,alerts",
+            "&appid=",
+            apiKey
+        );
+    }
+
+    /**
+     * @notice Creates a Chainlink request to retrieve API response
      *
      * @return requestId - id of the request
      */
-    function requestVolumeData() public returns (bytes32 requestId) {
+    function requestData() public returns (bytes32 requestId) {
         Chainlink.Request memory request = buildChainlinkRequest(
             jobId,
             address(this),
             this.fulfill.selector
         );
 
-        // Set the URL to perform the GET request on
-        request.add(
-            "get",
-            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
+        // Make sure that the url has been created
+        require(
+            keccak256(abi.encode(requestUrl)) != bytes32(0),
+            "please create a request by calling createRequest"
         );
+        // Set the URL to perform the GET request on
+        request.add("get", requestUrl);
 
         // Set the path to find the desired data in the API response, where the response format is:
-        // {"RAW":
-        //   {"ETH":
-        //    {"USD":
-        //     {
-        //      "VOLUME24HOUR": xxx.xxx,
-        //     }
+        // {"data":
+        //   {
+        //    "temp": xxx.xx:
         //    }
-        //   }
         //  }
-        // request.add("path", "RAW.ETH.USD.VOLUME24HOUR"); // Chainlink nodes prior to 1.0.0 support this format
-        request.add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
+        // request.add("path", "data,temp"); // Chainlink nodes prior to 1.0.0 support this format
+        request.add("path", "data,0,temp"); // Chainlink nodes 1.0.0 and later support this format
 
-        // Multiply the result by 1000000000000000000 to remove decimals
-        int256 timesAmount = 10**18;
+        int256 timesAmount = 10**2;
         request.addInt("times", timesAmount);
 
         // Sends the request
@@ -91,19 +116,25 @@ contract APIConsumer is ChainlinkClient {
      * @notice Receives the response in the form of uint256
      *
      * @param _requestId - id of the request
-     * @param _volume - response; requested 24h trading volume of ETH in USD
+     * @param _temperature - response; requested temperature for a given longitude & latitude
      */
-    function fulfill(bytes32 _requestId, uint256 _volume)
+    function fulfill(bytes32 _requestId, uint256 _temperature)
         public
         recordChainlinkFulfillment(_requestId)
     {
-        volume = _volume;
-        emit DataFullfilled(volume);
+        temperature = (_temperature - 27315) / 100;
+        emit DataFullfilled(temperature);
     }
 
     /**
      * @notice Witdraws LINK from the contract
      * @dev Implement a withdraw function to avoid locking your LINK in the contract
      */
-    function withdrawLink() external {}
+    function withdrawLink() external {
+        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+        require(
+            link.transfer(msg.sender, link.balanceOf(address(this))),
+            "Unable to transfer"
+        );
+    }
 }

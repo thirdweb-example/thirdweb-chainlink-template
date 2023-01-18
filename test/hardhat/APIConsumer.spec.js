@@ -35,9 +35,6 @@ const { assert, expect } = require("chai")
                   .connect(deployer)
                   .deploy(linkToken.address)
 
-              const jobId = ethers.utils.toUtf8Bytes(
-                  networkConfig[chainId]["jobId"]
-              )
               const fee = networkConfig[chainId]["fee"]
 
               const apiConsumerFactory = await ethers.getContractFactory(
@@ -45,7 +42,7 @@ const { assert, expect } = require("chai")
               )
               const apiConsumer = await apiConsumerFactory
                   .connect(deployer)
-                  .deploy(mockOracle.address, jobId, fee, linkToken.address)
+                  .deploy(mockOracle.address, fee, linkToken.address)
 
               const fundAmount =
                   networkConfig[chainId]["fundAmount"] || "1000000000000000000"
@@ -56,13 +53,13 @@ const { assert, expect } = require("chai")
               return { apiConsumer, mockOracle }
           }
 
-          describe("#requestVolumeData", async function () {
+          describe("#requestData", async function () {
               describe("success", async function () {
                   it("Should successfully make an API request", async function () {
                       const { apiConsumer } = await loadFixture(
                           deployAPIConsumerFixture
                       )
-                      const transaction = await apiConsumer.requestVolumeData()
+                      const transaction = await apiConsumer.requestData()
                       const transactionReceipt = await transaction.wait(1)
                       const requestId = transactionReceipt.events[0].topics[1]
                       expect(requestId).to.not.be.null
@@ -72,7 +69,7 @@ const { assert, expect } = require("chai")
                       const { apiConsumer, mockOracle } = await loadFixture(
                           deployAPIConsumerFixture
                       )
-                      const transaction = await apiConsumer.requestVolumeData()
+                      const transaction = await apiConsumer.requestData()
                       const transactionReceipt = await transaction.wait(1)
                       const requestId = transactionReceipt.events[0].topics[1]
                       const callbackValue = 777
@@ -80,8 +77,11 @@ const { assert, expect } = require("chai")
                           requestId,
                           numToBytes32(callbackValue)
                       )
-                      const volume = await apiConsumer.volume()
-                      assert.equal(volume.toString(), callbackValue.toString())
+                      const temperature = await apiConsumer.temperature()
+                      assert.equal(
+                          temperature.toString(),
+                          callbackValue.toString()
+                      )
                   })
 
                   it("Our event should successfully fire event on callback", async function () {
@@ -94,13 +94,14 @@ const { assert, expect } = require("chai")
                           // setup listener for our event
                           apiConsumer.once("DataFullfilled", async () => {
                               console.log("DataFullfilled event fired!")
-                              const volume = await apiConsumer.volume()
+                              const temperature =
+                                  await apiConsumer.temperature()
                               // assert throws an error if it fails, so we need to wrap
                               // it in a try/catch so that the promise returns event
                               // if it fails.
                               try {
                                   assert.equal(
-                                      volume.toString(),
+                                      temperature.toString(),
                                       callbackValue.toString()
                                   )
                                   resolve()
@@ -108,8 +109,7 @@ const { assert, expect } = require("chai")
                                   reject(e)
                               }
                           })
-                          const transaction =
-                              await apiConsumer.requestVolumeData()
+                          const transaction = await apiConsumer.requestData()
                           const transactionReceipt = await transaction.wait(1)
                           const requestId =
                               transactionReceipt.events[0].topics[1]

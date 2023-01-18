@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // An example of a consumer contract that uses the subscription funding method.
 // This contract has been adapted from the Chainlink Foundry strater kit
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.12;
 
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
@@ -23,7 +23,7 @@ contract RandomNumberConsumerV2 is VRFConsumerBaseV2 {
 
     // Depends on the number of requested values that you want sent to the
     // fulfillRandomWords() function. Storing each word costs about 20,000 gas,
-    // so 100,000 is a safe default for this example contract given that we will request 2 words. 
+    // so 100,000 is a safe default for this example contract given that we will request 2 words.
     // Test and adjusr this limit based on the network that you select, the size of the request,
     // and the processing of the callback request in the fulfillRandomWords()
     // function.

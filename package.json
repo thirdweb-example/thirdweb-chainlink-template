@@ -39,7 +39,9 @@
     "typechain": "^8.1.0"
   },
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "@openzeppelin/contracts": "^4.8.1",
+    "dotenv": "^16.0.3",
+    "thirdweb": "^0.9.8"
   },
   "lint-staged": {
     "*.{js,json,yml,yaml}": [
