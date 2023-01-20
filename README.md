@@ -105,11 +105,31 @@ After waiting a few seconds, call the `temperature` read function to view the cu
 
 This example uses Automation to automatically increment a counter after a given interval.
 
+Deploy the `AutomationCounter` contract using thirdweb with the instructions above and provide the following contract parameter:
+
+-   updateInterval: 10
+
+The interval is how many **seconds** between automatic incrementations of the counter. Here we are specifying 10 seconds but feel free to choose a different interval.
+
+From the contract dashboard, copy the contract address to register it for Upkeep.
+
+To allow your contract to be monitored for automation, it needs to registered as a new upkeep. Follow [this link](https://automation.chain.link/) and click `Register new Upkeep`
+
+Select `Custom Logic` for the trigger & paste in your contract address. Fill in the required feeds to register your contract and click `Register Upkeep`
+
+Fund your Upkeep with some testnet LINK and from the thirdweb Dashboard
+
+From the contract dashboard, click counter from the list of read functions and click `Run`. The counter should increment every time your time-interval elapses!
+
 ## Price Feeds
 
 To request a specific price feed, find the specific network you are deploying to from [this list](https://docs.chain.link/data-feeds/price-feeds/addresses/) and then find the price feed you would like to read and copy the address. On Goerli, the ETH/USD price feed address is:
 
 0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e
+
+Follow the deployment steps above to deploy the `PriceFeedConsumerV3` contract and paste the above address as the contract parameter.
+
+On the contract dashboard, run the `getLatestPrice` function to read the current price of your requested price feed.
 
 ## Get a Random Number
 
@@ -127,6 +147,17 @@ To view the returned random values, select s*randomWords under the read function
 
 # Thank You!
 
+A massive thank you to Patrick Collins & the Chainlink team for providing so many educational resources in the docs, YouTube channel & more to enable developers like me to create these projects!
+
 ## Discord
 
+If you have any questions on how to integrate Chainlink into your own projects, jump into the thirdweb Discord and we will be happy to answer your questions:)
+
 ## Resources
+
+-   [thirdweb YouTube](https://www.youtube.com/@thirdweb_)
+-   [thirdweb Docs](https://portal.thirdweb.com/)
+-   [Chainlink Docs](https://docs.chain.link/)
+-   [Chainlink YouTube](chainlink)
+-   [Foundry Chainlink Starter Kit](https://github.com/smartcontractkit/foundry-starter-kit)
+-   [HardHat Chainlink Starter Kit](https://github.com/smartcontractkit/hardhat-starter-kit)
