@@ -70,7 +70,7 @@ npx hardhat test
 To deploy your contracts, run
 
 ```sh
-npx thirdweb@latest deploy
+npx thirdweb deploy
 ```
 
 You will be prompted to choose a framework & then which of the contracts you would like to deploy. This will initiate your Dashboard to pop up in a browser window for you to fill out the required contract parameters. You will then be able to view your contract address, the read and write functions, the public variables, events, source code and more directly from the thirdweb Dashboard. Here, you will be able to interact with your contract.
