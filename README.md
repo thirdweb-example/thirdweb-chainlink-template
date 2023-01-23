@@ -31,7 +31,7 @@ npx thirdweb create --template thirdweb-chainlink-template
 cd thirdweb-chainlink-template
 ```
 
-To install the projects dependences, run
+To install the projects dependencies, run
 
 ```sh
 foundryup && forge clean && forge install
@@ -131,15 +131,15 @@ On the contract dashboard, run the `getLatestPrice` function to read the current
 
 When deploying the `RandomNumberConsumerV2` contract, three constructor parameters are required:
 
--   keyHash
--   VRFCoodinator address
--   subscriptionID: a subscription will need to be created on the Subscription Manager to obtain this value, and the Subscription will need to be funded with some test LINK
+-   `keyHash`
+-   `VRFCoodinator` address [can be found here](https://docs.chain.link/docs/vrf-contracts/#configurations)
+-   `subscriptionID`: a subscription will need to be created on the Subscription Manager to obtain this value, and the Subscription will need to be funded with some test LINK
 
 After deploying the contract, add the contract address as a consumer on the Subscription ID in order to request random numbers.
 
-To request Random Numbers, click the write function `requestRandomWords` and click **Execute**. As long as the subscription is sufficiently funded, the request will be fulfilled, the status of the request can be viewed on the Subscription ID.
+To request Random Numbers, click the write function `requestRandomWords` and click `Execute`. As long as the subscription is sufficiently funded, the request will be fulfilled, the status of the request can be viewed on the Subscription ID.
 
-To view the returned random values, select s*randomWords under the read functions, input either 0 or 1 for the \_key* parameter (as we have requested two random words) and click **run**.
+To view the returned random values, select `s_randomWords` under the read functions, input either 0 or 1 for the `key` parameter (as we have requested two random words), and click `Run`.
 
 # Thank You!
 
