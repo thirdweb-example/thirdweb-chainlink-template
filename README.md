@@ -1,6 +1,6 @@
 # thirdweb Chainlink Starter Kit
 
-This template provides implementations of the 4 Chainlink features using either Foundry OR Hardhat depending on your preferences. It show developers how to build and test contracts and deploy using thirdweb.
+This template provides 4 contracts with implementations of the 4 Chainlink features: [Any API - Request & Recieve Data](#request-and-recieve-data), [Automation](#automation), [VRF - Getting Random Numbers](#get-a-random-number) & [Price Feeds](#price-feeds) using either Foundry OR Hardhat depending on your preferences. It show developers how to build and test contracts and deploy using thirdweb.
 This template currently is currently set up to deploy to Goerli. It has been adapted from the Chainlink starter kits, produced by Patrick Collins and reworked by Ciara Nightingale to combine Foundry & Hardhat and use thirdweb for deployment!
 
 -   [thirdweb Chainlink Starter Kit](#thirdweb-chainlink-starter-kit)
@@ -22,21 +22,19 @@ This template currently is currently set up to deploy to Goerli. It has been ada
 
 # Getting Started
 
--   Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+-   Install either Foundry or Hardhat depending on your preferences.
 
--   Install either Foundry or Hardhat depending on yourb preferences.
-
--   Clone this repo
+-   Run
 
 ```sh
-git clone https://github.com/smartcontractkit/foundry-starter-kit
-cd foundry-starter-kit
+npx thirdweb create --template thirdweb-chainlink-starter-kit
+cd thirdweb-chainlink-starter-kit
 ```
 
 To install the projects dependences, run
 
 ```sh
-forge install
+foundryup && forge clean && forge install
 ```
 
 or
@@ -73,7 +71,7 @@ To deploy your contracts, run
 npx thirdweb deploy
 ```
 
-You will be prompted to choose a framework & then which of the contracts you would like to deploy. This will initiate your Dashboard to pop up in a browser window for you to fill out the required contract parameters. You will then be able to view your contract address, the read and write functions, the public variables, events, source code and more directly from the thirdweb Dashboard. Here, you will be able to interact with your contract.
+You will be prompted to choose a framework & then which of the contract(s) you would like to deploy. This will initiate your Dashboard to pop up in a browser window for you to fill out the required contract parameters. You will then be able to view your contract address, the read and write functions, the public variables, events, source code and more directly from the thirdweb Dashboard. Here, you will be able to interact with your contract.
 
 # Interacting with Contracts
 
@@ -81,7 +79,7 @@ You will be prompted to choose a framework & then which of the contracts you wou
 
 To interact with contracts, we will use the thirdweb [Dashboard](https://thirdweb.com/dashboard). Here, you will be able to see all of your deployed contracts and be able to see all of the external & public functions on the contracts. We will also be able to call the functions from the UI.
 
-## Request and Recieve Data
+## [Request and Recieve Data](/contracts/APIConsumer.sol)
 
 This specific Any API example uses a weather API to request the current temperature for a given logitude & latitude. To make a request, you will need to [set up an account](https://openweathermap.org/api) on the API provider website so that you can get your own API key.
 
@@ -101,7 +99,7 @@ Next, call `requestData` to make a request to the oracle network to perform the 
 
 After waiting a few seconds, call the `temperature` read function to view the current temperature in your requested location!
 
-## Automation
+## [Automation](/contracts/AutomationCounter.sol)
 
 This example uses Automation to automatically increment a counter after a given interval.
 
@@ -121,7 +119,7 @@ Fund your Upkeep with some testnet LINK and from the thirdweb Dashboard
 
 From the contract dashboard, click counter from the list of read functions and click `Run`. The counter should increment every time your time-interval elapses!
 
-## Price Feeds
+## [Price Feeds](/contracts/PriceConsumerV3.sol)
 
 To request a specific price feed, find the specific network you are deploying to from [this list](https://docs.chain.link/data-feeds/price-feeds/addresses/) and then find the price feed you would like to read and copy the address. On Goerli, the ETH/USD price feed address is:
 
@@ -131,7 +129,7 @@ Follow the deployment steps above to deploy the `PriceFeedConsumerV3` contract a
 
 On the contract dashboard, run the `getLatestPrice` function to read the current price of your requested price feed.
 
-## Get a Random Number
+## [Get a Random Number](/contracts/RandomNumberConsumerV2.sol)
 
 When deploying your `RandomNumberConsumerV2` contract, you will be required to input three contract parameters:
 
