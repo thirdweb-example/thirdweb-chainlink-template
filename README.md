@@ -1,9 +1,9 @@
-# thirdweb Chainlink Starter Kit
+# thirdweb Chainlink Template
 
 This template provides 4 contracts with implementations of the 4 Chainlink features: [Any API - Request & Recieve Data](#request-and-recieve-data), [Automation](#automation), [VRF - Getting Random Numbers](#get-a-random-number) & [Price Feeds](#price-feeds) using either Foundry OR Hardhat depending on your preferences. It show developers how to build and test contracts and deploy using thirdweb.
 This template currently is currently set up to deploy to Goerli. It has been adapted from the Chainlink starter kits, produced by Patrick Collins and reworked by Ciara Nightingale to combine Foundry & Hardhat and use thirdweb for deployment!
 
--   [thirdweb Chainlink Starter Kit](#thirdweb-chainlink-starter-kit)
+-   [thirdweb Chainlink Template](#thirdweb-chainlink-template)
 -   [Getting Started](#getting-started)
 -   [Testing](#testing)
     -   [Testing with Foundry](#testing-with-foundry)
@@ -27,8 +27,8 @@ This template currently is currently set up to deploy to Goerli. It has been ada
 -   Run
 
 ```sh
-npx thirdweb create --template thirdweb-chainlink-starter-kit
-cd thirdweb-chainlink-starter-kit
+npx thirdweb create --template thirdweb-chainlink-template
+cd thirdweb-chainlink-template
 ```
 
 To install the projects dependences, run

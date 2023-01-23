@@ -30,6 +30,13 @@ contract AutomationCounter is AutomationCompatibleInterface {
         counter = 0;
     }
 
+    /**
+     * This function is called by the oracle network to check if upkeep is needed
+     * checkData can be specified to add different execution paths to the checkUpkeep function
+     * Defined whe registering the upkeep on the UI
+     * e.g. check balance of specific adresses. These checks are performed off-chain to avoid gas
+     * result sent to performUpkeep through performData
+     */
     function checkUpkeep(
         bytes memory /* checkData */
     )
@@ -45,6 +52,9 @@ contract AutomationCounter is AutomationCompatibleInterface {
         // We don't use the checkData in this example. The checkData is defined when the Upkeep was registered.
     }
 
+    /**
+     * This function is called by the oracle network when upkeep is needed
+     */
     function performUpkeep(
         bytes calldata /* performData */
     ) external override {
